@@ -12,16 +12,24 @@ class PreferencesCrossfadeHook: ClassHook<NSObject> {
     static let targetName = "_TtC31Preferences_CorePreferencesImpl28SPTPreferencesImplementation"
 
     func setAudioCrossfadeTime(_ value: Int) {
+        NSLog("[EeveeSpotify][Crossfade] setAudioCrossfadeTime: %d", value)
         orig.setAudioCrossfadeTime(value)
         orig.setAudioCrossfade(value > 0)
     }
 
     // Passthrough; declared so orig.setAudioCrossfade is callable above.
     func setAudioCrossfade(_ value: Bool) {
+        NSLog("[EeveeSpotify][Crossfade] setAudioCrossfade: %d", value ? 1 : 0)
         orig.setAudioCrossfade(value)
     }
 }
 
 func activateEeveeCrossfadeForce() {
-    EeveeCrossfadePrefGroup().activate()
+    let targetClass = "_TtC31Preferences_CorePreferencesImpl28SPTPreferencesImplementation"
+    if NSClassFromString(targetClass) != nil {
+        NSLog("[EeveeSpotify][Crossfade] Activating hook for %@", targetClass)
+        EeveeCrossfadePrefGroup().activate()
+    } else {
+        NSLog("[EeveeSpotify][Crossfade] Target class %@ not found – skipping hook", targetClass)
+    }
 }

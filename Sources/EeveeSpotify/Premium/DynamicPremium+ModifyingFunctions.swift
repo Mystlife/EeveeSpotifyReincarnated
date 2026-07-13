@@ -18,6 +18,9 @@ private let propertyReplacements = [
     // Append when the account's config omits them, so they work without overwrite-configuration.
     EeveePropertyReplacement(name: "crossfade_enabled", scope: "ios-feature-settings", modification: .forceBool(true)),
     EeveePropertyReplacement(name: "automix_enabled", scope: "ios-feature-settings", modification: .forceBool(true)),
+    // Spotify 9.1.x also checks the underscore variant of the product-state flag.
+    EeveePropertyReplacement(name: "enable_crossfade_product_state", scope: "ios-feature-settings", modification: .forceBool(true)),
+    EeveePropertyReplacement(name: "enable_gapless_product_state", scope: "ios-feature-settings", modification: .forceBool(true)),
 
     // capping
     EeveePropertyReplacement(name: "enable_common_capping", modification: .remove),
@@ -396,7 +399,21 @@ private func modifyAttributes(_ attributes: inout [String: AccountAttribute]) {
         $0.stringValue = "1"
     }
 
+    // Spotify 9.1.x also checks the underscore variant.
+    attributes["enable_crossfade_product_state"] = AccountAttribute.with {
+        $0.stringValue = "1"
+    }
+
+    // The fade engine gates on this boolean too.
+    attributes["crossfade_is_enabled"] = AccountAttribute.with {
+        $0.stringValue = "1"
+    }
+
     attributes["enable-gapless-product-state"] = AccountAttribute.with {
+        $0.stringValue = "1"
+    }
+
+    attributes["enable_gapless_product_state"] = AccountAttribute.with {
         $0.stringValue = "1"
     }
 
